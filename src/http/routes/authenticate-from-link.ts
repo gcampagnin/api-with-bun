@@ -7,7 +7,7 @@ import { eq } from 'drizzle-orm'
 
 export const authenticateFromLink = new Elysia().use(auth).get(
   '/auth-links/authenticate',
-  async ({ query, jwt, cookie: { auth }, redirect: sendRedirect }) => {
+  async ({ query, signUser, redirect: sendRedirect }) => {
     const { code, redirect } = query
 
     const authLinkFromCode = await db.query.authLinks.findFirst({
@@ -29,25 +29,16 @@ export const authenticateFromLink = new Elysia().use(auth).get(
       throw new Error('Auth link expired, please generate a new one.')
     }
 
-    const managedRestaurante = await db.query.restaurants.findFirst({
+    const managedRestaurant = await db.query.restaurants.findFirst({
       where(fields, { eq }) {
         return eq(fields.managerId, authLinkFromCode.userId)
       },
     })
 
-    const token = await jwt.sign({
+    await signUser({
       sub: authLinkFromCode.userId,
-      restaurantId: managedRestaurante?.id,
+      restaurantId: managedRestaurant?.id,
     })
-
-    if (!auth) {
-      throw new Error('Cookie is not found.')
-    }
-
-    auth.value = token
-    auth.httpOnly = true
-    auth.maxAge = 60 * 60 * 24 * 7 // 7 days
-    auth.path = '/'
 
     await db.delete(authLinks).where(eq(authLinks.code, code))
 
