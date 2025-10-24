@@ -43,6 +43,13 @@
       "when": 1761170092582,
       "tag": "0005_oval_wolfpack",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1761345922893,
+      "tag": "0006_next_hex",
+      "breakpoints": true
     }
   ]
 }
