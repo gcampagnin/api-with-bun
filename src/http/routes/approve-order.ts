@@ -9,9 +9,9 @@ export const approveOrder = new Elysia().use(auth).patch(
   '/orders/:orderId/approve',
   async ({ getCurrentUser, set, params }) => {
     const { orderId } = params
-    const { restauranteId } = await getCurrentUser()
+    const { restaurantId } = await getCurrentUser()
 
-    if (!restauranteId) {
+    if (!restaurantId) {
       throw new UnauthorizedError()
     }
 

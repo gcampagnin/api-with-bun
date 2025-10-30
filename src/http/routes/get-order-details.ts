@@ -7,9 +7,9 @@ export const getOrderDetails = new Elysia().use(auth).get(
   '/orders/:orderId',
   async ({ getCurrentUser, params, set }) => {
     const { orderId } = params
-    const { restauranteId } = await getCurrentUser()
+    const { restaurantId } = await getCurrentUser()
 
-    if (!restauranteId) {
+    if (!restaurantId) {
       throw new UnauthorizedError()
     }
 

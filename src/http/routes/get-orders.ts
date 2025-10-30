@@ -9,10 +9,10 @@ import { and, count, desc, eq, ilike, sql } from 'drizzle-orm'
 export const getOrders = new Elysia().use(auth).get(
   '/orders',
   async ({ getCurrentUser, query }) => {
-    const { restauranteId } = await getCurrentUser()
+    const { restaurantId } = await getCurrentUser()
     const { customerName, orderId, status, pageIndex } = query
 
-    if (!restauranteId) {
+    if (!restaurantId) {
       throw new UnauthorizedError()
     }
 
@@ -28,7 +28,7 @@ export const getOrders = new Elysia().use(auth).get(
       .innerJoin(users, eq(users.id, orders.customerId))
       .where(
         and(
-          eq(orders.restaurantId, restauranteId),
+          eq(orders.restaurantId, restaurantId),
           orderId ? ilike(orders.id, `%${orderId}%`) : undefined,
           status ? eq(orders.id, status) : undefined,
           customerName ? ilike(users.name, `%${customerName}%`) : undefined,
